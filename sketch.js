@@ -108,13 +108,14 @@ function draw(){
     //exibe o texto de pontuação 12/12
       text("Pontuação" + score, 500, 50);
     //calcula a pontuação dividindo o total de frames gerados por 60 12/12
-      score = score + Math.round(frameCount/60);
+      //score = score + Math.round(frameCount/60);
+    //calcula a pontuação com precisão e reinicia com o reset 26/12
+      score = score + Math.round(getFrameRate/60);
     //se a pontuação for maior que 0 e for multiplo de 100 (100,200,300,...) 19/12
       if(score>0 && score%100 === 0){
         checkPointSound.play(); //toca o som a cada 100 pts
       }
-    //pular quando a tecla espaço for pressionada e somente quando estiver acima do eixo y=100
-    //30/11
+    //pular quando a tecla espaço for pressionada e somente quando estiver acima do eixo y=100 30/11
       if(keyDown("space") && trex.y >= 100) {
        trex.velocityY = -10;
        jumpSound.play(); //toca o som do pulo 19/12
@@ -129,7 +130,6 @@ function draw(){
       }
       spawnClouds(); //chama a função de gerar nuvens 05/12
       spawnObstacles();//chama a função para gerar os obstáculos 07/12
-
       //se os obstaculos tocarem o trex, o jogo acaba 14/12
     if(obstacles.isTouching(trex))
         { 
@@ -150,13 +150,17 @@ function draw(){
       gameOver.visible = true; //visibilidade da imagem de GameOver 14/12
       restart.visible = true; //visibilidade da imagem de Restart 14/12
 
-      //definir tempo de vida aos objetos do jogo para que nunca sejam destruídos 14/12
+    //definir tempo de vida aos objetos do jogo para que nunca sejam destruídos 14/12
        obstacles.setLifetimeEach(-1);
        clouds.setLifetimeEach(-1);
 
-     //definir velocidade aos objetos do jogo para que nunca se movam 14/12
+    //definir velocidade aos objetos do jogo para que nunca se movam 14/12
        obstacles.setVelocityXEach(0);
        clouds.setVelocityXEach(0);
+    //chamar a função reset clicando com o mouse 26/12
+       if(mousePressedOver(restart)){
+        reset();
+       }
   }
   drawSprites(); //desenha os sprites na tela 28/11
 
@@ -210,4 +214,19 @@ function spawnObstacles(){
      obstacle.scale = 0.5;
      obstacle.lifetime = 300;
   }
+ }
+
+ function reset(){//função de reiniciar o jogo 26/12
+  //pontuação volta a ser zero
+  score = 0;
+  //destruir os sprites de obstaculos e nuvens para nao sobrecarregar a memória
+  obstacles.destroyEach();
+  clouds.destroyEach();
+  //deixar os sprites de gameover e reiniciar invisiveis
+  gameOver.visible = false;
+  restart.visible = false;
+  //colocar a animação do trex correndo novamente
+  trex.changeAnimation("running", trex_running);
+  //mudar o estado de jogo
+  gamestate = PLAY;
  }
