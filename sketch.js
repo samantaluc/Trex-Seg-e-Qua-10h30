@@ -24,6 +24,8 @@ var clouds; //variavel para nuvens (grupo) 12/12
 var gameOver, restart; //variavel para Fim de Jogo e Reiniciar 14/12
 
 var gameOverImg, restartImg; //variavel para imagem de Game Over e Reiniciar 14/12
+
+var jumpSound, dieSound, checkPointSound; //variavel para os sons 19/12
 //---------------------------------------
 function preload(){
   //Preload vai carregar arquivos de imagem (.PNG) e som (.MP3)
@@ -42,6 +44,10 @@ function preload(){
 //imagens para reiniciar e game over 14/12
   restartImg = loadImage("restart.png");
   gameOverImg = loadImage("gameOver.png");
+//sons para o jogo 19/12
+  jumpSound = loadSound("jump.mp3");
+  dieSound = loadSound("die.mp3");
+  checkPointSound = loadSound("checkpoint.mp3");
 }
 //---------------------------------------
 function setup(){
@@ -97,14 +103,21 @@ function draw(){
   background("white");
   //----------ESTADO DE JOGO JOGAR(PLAY)-----------
   if (gamestate === PLAY){ //estado de JOGAR 12/12
+    //velocidade do chão aumenta conforme a pontuação 21/12
+      ground.velocityX = -(4 + 3 * score/100);
     //exibe o texto de pontuação 12/12
       text("Pontuação" + score, 500, 50);
     //calcula a pontuação dividindo o total de frames gerados por 60 12/12
       score = score + Math.round(frameCount/60);
+    //se a pontuação for maior que 0 e for multiplo de 100 (100,200,300,...) 19/12
+      if(score>0 && score%100 === 0){
+        checkPointSound.play(); //toca o som a cada 100 pts
+      }
     //pular quando a tecla espaço for pressionada e somente quando estiver acima do eixo y=100
     //30/11
       if(keyDown("space") && trex.y >= 100) {
        trex.velocityY = -10;
+       jumpSound.play(); //toca o som do pulo 19/12
       }
     //trex voltar ao chão depois do pulo 30/11
       trex.velocityY = trex.velocityY + 0.8
@@ -120,6 +133,7 @@ function draw(){
       //se os obstaculos tocarem o trex, o jogo acaba 14/12
     if(obstacles.isTouching(trex))
         { 
+          dieSound.play(); // toca o som dele morrendo 19/12
           gamestate = END; // mudar o estado de jogo para Final
         }
     gameOver.visible = false; //não tem visibilidade da imagem de GameOver 14/12
@@ -173,9 +187,9 @@ function spawnClouds(){
 function spawnObstacles(){
   if (frameCount % 60 === 0){
     var obstacle = createSprite(400,165,10,40);
-    obstacle.velocityX = -6;
+    obstacle.velocityX = -(6 + score/100);//aumentar a velocidade dos obstáculos conforme pontuaçao 21/12
      //gerar obstáculos aleatórios
-     var rand = Math.round(random(1,6));
+    var rand = Math.round(random(1,6));
      switch(rand) {
        case 1: obstacle.addImage(obstacle1);
                break;//reinicia a escolha
