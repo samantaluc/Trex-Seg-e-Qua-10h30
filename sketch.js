@@ -110,7 +110,7 @@ function draw(){
     //calcula a pontuação dividindo o total de frames gerados por 60 12/12
       //score = score + Math.round(frameCount/60);
     //calcula a pontuação com precisão e reinicia com o reset 26/12
-      score = score + Math.round(getFrameRate/60);
+      score = score + Math.round(getFrameRate()/60);
     //se a pontuação for maior que 0 e for multiplo de 100 (100,200,300,...) 19/12
       if(score>0 && score%100 === 0){
         checkPointSound.play(); //toca o som a cada 100 pts
