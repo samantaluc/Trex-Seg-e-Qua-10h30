@@ -217,6 +217,8 @@ function spawnObstacles(){
  }
 
  function reset(){//função de reiniciar o jogo 26/12
+  //mudar o estado de jogo
+  gamestate = PLAY;
   //pontuação volta a ser zero
   score = 0;
   //destruir os sprites de obstaculos e nuvens para nao sobrecarregar a memória
@@ -227,6 +229,5 @@ function spawnObstacles(){
   restart.visible = false;
   //colocar a animação do trex correndo novamente
   trex.changeAnimation("running", trex_running);
-  //mudar o estado de jogo
-  gamestate = PLAY;
+  
  }
